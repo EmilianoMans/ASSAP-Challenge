@@ -1,0 +1,1936 @@
+{
+	"info": {
+		"_postman_id": "7662d122-fdae-4970-9b37-863c82324d82",
+		"name": "ASAPP Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16969035"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"item": [
+				{
+					"name": "User registration successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = JSON.parse(pm.request.body);",
+									"var username = body.username;",
+									"var password = body.password;",
+									"",
+									"pm.environment.set(\"username\", username);",
+									"pm.environment.set(\"password\", password);",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body is 'User created successfully'\", function () {",
+									"    pm.response.to.have.body('\"User created successfully\"\\n')",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');",
+									"pm.environment.set('timestamp_last', moment().format(\"YYYYMMDDTHHmmss\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"TestUser-{{timestamp_last}}\",\n  \"password\": \"TestPass-{{timestamp_last}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/register",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User registration unsuccessful - empty body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(prefix_test + \" Status Code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"  \",\n  \"password\": \"  \"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/register",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User registration unsuccessful - one character",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(prefix_test \" Status Code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"a\",\n  \"password\": \"a\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/register",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User registration unsuccessful - duplicated user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\" Status Code is 409\", function () {",
+									"    pm.response.to.have.status(409);",
+									"});",
+									"",
+									"pm.test(`Body is 'Username already exists'`), function () {",
+									"    pm.response.to.have.body(`'Username \\\"${pm.environment.get('username')}\\\" already exists'`)",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/register",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body is 'Login succeeded.'\", function () {",
+									"    pm.response.to.have.body('\"Login succeeded.\"\\n')",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/login",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login unsuccessful - wrong username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\" Status Code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body is 'Invalid username/password combo.'\", function () {",
+									"    pm.response.to.have.body('\"Invalid username/password combo.\"\\n')",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"Test\",\n  \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/login",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login unsuccessful - wrong password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\" Status Code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body is 'Invalid username/password combo.'\", function () {",
+									"    pm.response.to.have.body('\"Invalid username/password combo.\"\\n')",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"Pass\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/login",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Logout succeeded.\", function () {",
+									"    pm.response.to.have.body('\"Logout succeeded.\"\\n')",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"User1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/logout",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout unsuccessful - no active session",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Unable to log out user: No active session\", function () {",
+									"    pm.response.to.have.body('\"Unable to log out user: No active session\"\\n')",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"User1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/users/logout",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"for (let i=0; i < Object.keys(body).length; i++){",
+									"    pm.environment.set(`productName${i + 1}`, body[i].product_name);",
+									"    pm.environment.set(`productQuantity${i +1}`, body[i].product_qty);",
+									"}",
+									"",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const schema = {",
+									"        \"product_name\" : \"string\",",
+									"        \"product_qty\" : \"number\",",
+									"        \"product_descr\" : \"string\"",
+									"}",
+									"",
+									"pm.test(\"Schema is correct\", function () {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{uri}}/{{username}}/products",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get First Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Correct Name\", function () {",
+									"    pm.expect(body.product_name).to.eq(pm.environment.get('productName1'));",
+									"});",
+									"",
+									"pm.test(\"Correct quantity\", function () {",
+									"    pm.expect(body.product_qty).to.eq(pm.environment.get('productQuantity1'));",
+									"});",
+									"",
+									"const schema = {",
+									"        \"product_name\" : \"string\",",
+									"        \"product_qty\" : \"number\",",
+									"        \"product_descr\" : \"string\"",
+									"}",
+									"",
+									"pm.test(\"Schema is correct\", function () {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName1}}",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Second Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Correct Name\", function () {",
+									"    pm.expect(body.product_name).to.eq(pm.environment.get('productName2'));",
+									"});",
+									"",
+									"pm.test(\"Correct quantity\", function () {",
+									"    pm.expect(body.product_qty).to.eq(pm.environment.get('productQuantity2'));",
+									"});",
+									"",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200)",
+									"});",
+									"",
+									"const schema = {",
+									"        \"product_name\" : \"string\",",
+									"        \"product_qty\" : \"number\",",
+									"        \"product_descr\" : \"string\"",
+									"}",
+									"",
+									"pm.test(\"Schema is correct\", function () {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName2}}",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Third Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Correct Name\", function () {",
+									"    pm.expect(body.product_name).to.eq(pm.environment.get('productName3'));",
+									"});",
+									"",
+									"pm.test(\"Correct quantity\", function () {",
+									"    pm.expect(body.product_qty).to.eq(pm.environment.get('productQuantity3'));",
+									"});",
+									"",
+									"const schema = {",
+									"        \"product_name\" : \"string\",",
+									"        \"product_qty\" : \"number\",",
+									"        \"product_descr\" : \"string\"",
+									"}",
+									"",
+									"pm.test(\"Schema is correct\", function () {",
+									"    pm.response.to.have.jsonSchema(schema);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName3}}",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName3}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add One First Product To Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`product \\\"${pm.environment.get('productName1')}\\\"`)",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var str = body.split(' ')[1];",
+									"pm.environment.set('productCounter1',str.split('\"')[1]) ",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName1}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName1}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add One Second Product To Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`product \\\"${pm.environment.get('productName2')}\\\"`)",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var str = body.split(' ')[1];",
+									"pm.environment.set('productCounter2',str.split('\"')[1]) ",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName2}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName2}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add One Third Product To Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`product \\\"${pm.environment.get('productName3')}\\\"`)",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var str = body.split(' ')[1];",
+									"pm.environment.set('productCounter3',str.split('\"')[1]) ",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName3}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName3}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Items Added To User's Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Products Quantity is correct\", function() {",
+									"for(let i=0; i < Object.keys(body).length; i++){",
+									"    if(body[i].product_name === pm.environment.get('productName1')){",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productCounter1')));",
+									"    }",
+									"    if(body[i].product_name === pm.environment.get('productName2')){",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productCounter2')));",
+									"    }",
+									"    if(body[i].product_name === pm.environment.get('productName3')){",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productCounter3')));",
+									"    }",
+									"}",
+									"});",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.environment.set(\"test_counter\", 0)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add All First Product To Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`product \\\"${pm.environment.get('productName1')}\\\"`)",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var str = body.split(' ')[1];",
+									"pm.environment.set('productCounter1',str.split('\"')[1]) ",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var quantity = parseInt(pm.environment.get(\"productQuantity1\"));",
+									"var onCart = parseInt(pm.environment.get(\"productCounter1\"));",
+									"",
+									"pm.environment.set(\"availableProduct\", quantity - onCart );"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": {{availableProduct}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName1}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName1}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add All Second Product To Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`product \\\"${pm.environment.get('productName2')}\\\"`)",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var str = body.split(' ')[1];",
+									"pm.environment.set('productCounter2',str.split('\"')[1]) ",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var quantity = parseInt(pm.environment.get(\"productQuantity2\"));",
+									"var onCart = parseInt(pm.environment.get(\"productCounter2\"));",
+									"",
+									"pm.environment.set(\"availableProduct\", quantity - onCart );"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": {{availableProduct}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName2}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName2}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add All Third Product To Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`product \\\"${pm.environment.get('productName3')}\\\"`)",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var str = body.split(' ')[1];",
+									"pm.environment.set('productCounter3',str.split('\"')[1]) ",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var quantity = parseInt(pm.environment.get(\"productQuantity3\"));",
+									"var onCart = parseInt(pm.environment.get(\"productCounter3\"));",
+									"",
+									"pm.environment.set(\"availableProduct\", quantity - onCart );"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": {{availableProduct}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName3}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName3}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Items Added To User's Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Products Quantity is correct\", function() {",
+									"for(let i=0; i < Object.keys(body).length; i++){",
+									"    if(body[i].product_name === pm.environment.get('productName1')){",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productCounter1')));",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productQuantity1')));",
+									"    }",
+									"    if(body[i].product_name === pm.environment.get('productName2')){",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productCounter2')));",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productQuantity2')));",
+									"    }",
+									"    if(body[i].product_name === pm.environment.get('productName3')){",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productCounter3')));",
+									"        pm.expect(body[i].product_qty).to.eq(parseInt(pm.environment.get('productQuantity3')));",
+									"    }",
+									"}",
+									"});",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add More Than Stock First Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`\"${pm.environment.get('productName1')}\\\"`);",
+									"    pm.expect(body).to.include('insufficient inventory');",
+									"})",
+									"",
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName1}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName1}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add More Than Stock Second Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`\"${pm.environment.get('productName2')}\\\"`);",
+									"    pm.expect(body).to.include('insufficient inventory');",
+									"})",
+									"",
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName2}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName2}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add More Than Stock Third Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`\"${pm.environment.get('productName3')}\\\"`);",
+									"    pm.expect(body).to.include('insufficient inventory');",
+									"})",
+									"",
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName3}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName3}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Zero First Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName1}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName1}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Negative First Product Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": -1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName1}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName1}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove First Product to Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`\"${pm.environment.get('productName1')}\\\"`);",
+									"    pm.expect(body).to.include('removed from cart');",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart/{{productName1}}/remove",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart",
+								"{{productName1}}",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Second Product to Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`\"${pm.environment.get('productName2')}\\\"`);",
+									"    pm.expect(body).to.include('removed from cart');",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart/{{productName2}}/remove",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart",
+								"{{productName2}}",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Third Product to Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`\"${pm.environment.get('productName3')}\\\"`);",
+									"    pm.expect(body).to.include('removed from cart');",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart/{{productName3}}/remove",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart",
+								"{{productName3}}",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Items Added To User's Cart Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is empty\", function() {",
+									"    pm.expect(body).to.eq(null)",
+									"});",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Remove Again First Product to Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`\"${pm.environment.get('productName1')}\\\"`);",
+									"    pm.expect(body).to.include('not in cart');",
+									"})",
+									"",
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart/{{productName1}}/remove",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart",
+								"{{productName1}}",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add First Product To Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`product \\\"${pm.environment.get('productName1')}\\\"`)",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName1}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName1}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Remove Negative First Product to Cart Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": -1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart/{{productName1}}/remove",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart",
+								"{{productName1}}",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add First Product To Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.include(`product \\\"${pm.environment.get('productName1')}\\\"`)",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/{{productName1}}/add",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"{{productName1}}",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout successful",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\"Body is correct\", function () {",
+									"    pm.expect(body).to.eq(\"Checkout successful! Thank you for shopping with us.\");",
+									"})",
+									"",
+									"pm.test(\" Status Code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart/checkout",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout unsuccessful - empty cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var body = pm.response.json();",
+									"",
+									"pm.test(\" Status Code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/{{username}}/products/cart/checkout",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"{{username}}",
+								"products",
+								"cart",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

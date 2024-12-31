@@ -1,0 +1,10 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "TestUser",
+      "password": "TestPass"
+    }
+  ],
+  "baseUrl": "http://localhost:3000"
+}
